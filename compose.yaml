@@ -1,0 +1,122 @@
+name: ragnarok
+
+services:
+  ui:
+    build:
+      context: ./ragnarok-ui
+      dockerfile: Dockerfile
+      args:
+        VITE_API_BASE_URL: "${VITE_API_BASE_URL:-http://localhost:8000}"
+        VITE_DEFAULT_TENANT: "${VITE_DEFAULT_TENANT:-dev}"
+    ports:
+      - "${UI_PORT:-5173}:80"
+    depends_on:
+      gateway:
+        condition: service_started
+    restart: unless-stopped
+
+  gateway:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.gateway
+    command: ["--reload"]
+    ports:
+      - "${GATEWAY_PORT:-8000}:8000"
+    volumes:
+      - .:/app
+    env_file:
+      - .env
+    environment:
+      POSTGRES_HOST: "postgres"
+      QDRANT_HOST: "qdrant"
+      QDRANT_PORT: "6333"
+      QDRANT_API_KEY: "${QDRANT_API_KEY}"
+      # Ollama
+      OLLAMA_HOST: "ollama"
+      SMTP_HOST: "${SMTP_HOST:-mailpit}"
+      SMTP_PORT: "${SMTP_PORT:-1025}"
+      SMTP_USE_TLS: "${SMTP_USE_TLS:-false}"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      qdrant:
+        condition: service_started
+      ollama:
+        condition: service_started
+    restart: unless-stopped
+
+  postgres:
+    image: postgres:15-alpine
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    environment:
+      POSTGRES_USER: "${POSTGRES_USER:-ragnarok}"
+      POSTGRES_PASSWORD: "${POSTGRES_PASSWORD:-ragnarok_secret}"
+      POSTGRES_DB: "${POSTGRES_DB:-rag_db}"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-ragnarok} -d ${POSTGRES_DB:-rag_db}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    restart: unless-stopped
+
+  # qdrant:
+  #   image: qdrant/qdrant
+  #   ports:
+  #     - "${QDRANT_HTTP_PORT:-6333}:6333"
+  #     - "${QDRANT_GRPC_PORT:-6334}:6334"
+  #   volumes:
+  #     - qdrant_data:/qdrant/storage
+  #   restart: unless-stopped
+
+  qdrant:
+    image: qdrant/qdrant
+    ports:
+      - "127.0.0.1:${QDRANT_HTTP_PORT:-6333}:6333"   # chỉ bind localhost, không ra internet
+      - "127.0.0.1:${QDRANT_GRPC_PORT:-6334}:6334"
+    environment:
+      QDRANT__SERVICE__API_KEY: "${QDRANT_API_KEY}"   # server: bật khóa
+    volumes:
+      - qdrant_data:/qdrant/storage
+    restart: unless-stopped
+
+  ollama:
+    image: ollama/ollama
+    ports:
+      - "${OLLAMA_PORT:-11434}:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+    # deploy:
+    #    resources:
+    #      reservations:
+    #        devices:
+    #          - driver: nvidia
+    #            count: all
+    #            capabilities: [gpu]
+
+    restart: unless-stopped
+    entrypoint: >
+      sh -c "
+      ollama serve &
+      until ollama list >/dev/null 2>&1; do sleep 1; done &&
+      ollama pull qwen3:4b &&
+      ollama pull qwen3-embedding:0.6b &&
+      wait
+      "
+
+
+
+  mailpit:
+    image: axllent/mailpit
+    ports:
+      - "8025:8025"
+      - "1025:1025"
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+  qdrant_data:
+  ollama_data:

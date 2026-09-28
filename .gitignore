@@ -1,0 +1,24 @@
+.env
+.venv/
+ui/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.idea/
+.vscode/
+storage/
+venv/
+app/secrets
+.trellis/
+.github/
+AGENTS.md
+
+# Logs & temp dumps
+*.log
+tree.txt
+*.tmp
+*.bak
+
+# Kết quả đo latency — chứa tenant_id, sinh theo từng lần chạy, không commit
+profiling_results/*.jsonl
+profiling_results/archive/

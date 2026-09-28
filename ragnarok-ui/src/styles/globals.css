@@ -1,0 +1,467 @@
+:root {
+  --sidebar-bg: #F9F9F9;
+  --sidebar-hover: #ECECEC;
+  --sidebar-active: #E8E8E8;
+  --border: #ECECEC;
+  --text-primary: #111111;
+  --text-secondary: #6B7280;
+
+  --sidebar-text: #202123;
+  --sidebar-title: #111111;
+  --sidebar-muted: #6B6B6B;
+  --scrollbar: #D0D0D0;
+  --chat-bg: #FCFCFC;
+  --input-bg: #FAFAFA;
+  --message-user: #F3F3F3;
+  --text: var(--text-primary);
+
+  --bg: var(--chat-bg);
+  --surface: #ffffff;
+  --surface-muted: #f4f4f5;
+  --text-muted: var(--text-secondary);
+  --accent: #10a37f;
+  --accent-soft: rgba(16, 163, 127, 0.1);
+  --danger: #ef4444;
+  --warning: #f59e0b;
+  --success: #10b981;
+  font-family:
+    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI',
+    sans-serif;
+  color: var(--text);
+  background: var(--bg);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+a {
+  color: inherit;
+}
+
+.app-shell {
+  display: grid;
+  grid-template-columns: 248px minmax(0, 1fr);
+  min-height: 100vh;
+  transition: grid-template-columns 200ms ease;
+}
+
+.app-shell.sidebar-collapsed {
+  grid-template-columns: 56px minmax(0, 1fr);
+}
+
+.app-shell.sidebar-collapsed .sidebar {
+  padding: 16px 8px;
+  min-width: 0;
+}
+
+.app-shell.sidebar-collapsed .sidebar-brand-wrapper {
+  flex-direction: column;
+  gap: 12px;
+}
+
+.app-shell.sidebar-collapsed .new-chat-btn {
+  justify-content: center;
+  padding: 0;
+  width: 40px;
+}
+
+.app-shell.sidebar-collapsed .sidebar-footer {
+  flex-direction: column;
+  gap: 12px;
+  align-items: center;
+}
+
+.sidebar-logo-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.app-main {
+  min-width: 0;
+  padding: 0;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+
+.app-header {
+  align-items: center;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  margin: -24px -24px 24px;
+  min-height: 64px;
+  padding: 0 24px;
+}
+
+.app-header h1 {
+  font-size: 18px;
+  line-height: 1.2;
+  margin: 0;
+}
+
+.sidebar {
+  background: var(--sidebar-bg);
+  border-right: 1px solid var(--border);
+  padding: 24px 20px 20px 20px;
+  min-width: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100vh;
+  position: sticky;
+  top: 0;
+  box-sizing: border-box;
+
+  /* Sidebar typography configuration */
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 24px;
+  color: var(--sidebar-text);
+  font-family:
+    Inter,
+    ui-sans-serif,
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    Helvetica,
+    Arial,
+    sans-serif;
+}
+
+.sidebar-top {
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar-brand {
+  font-size: 21px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  margin-bottom: 28px;
+  text-transform: none;
+  color: var(--sidebar-title);
+}
+
+.sidebar-nav {
+  display: grid;
+  gap: 6px;
+}
+
+.sidebar-nav a {
+  border-radius: 6px;
+  color: var(--text-muted);
+  padding: 8px 10px;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.sidebar-nav a:hover {
+  background: var(--surface-muted);
+  color: var(--text);
+}
+
+.sidebar-nav a.active {
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.sidebar-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
+  margin-top: auto;
+}
+
+.user-profile {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.user-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 13px;
+  flex-shrink: 0;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+.user-details {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.user-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.user-role {
+  font-size: 11px;
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.logout-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  padding: 8px;
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.logout-btn:hover {
+  background: var(--surface-muted);
+  color: var(--danger);
+}
+
+.new-chat-btn {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: transparent;
+  border: none;
+  border-radius: 10px;
+  padding: 0 12px;
+  height: 40px;
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--sidebar-text);
+  width: 100%;
+  cursor: pointer;
+  transition: all 150ms ease;
+  margin: 0 0 16px 0;
+  box-sizing: border-box;
+  box-shadow: none;
+}
+
+.new-chat-btn:hover {
+  background: var(--sidebar-hover);
+}
+
+.sidebar-toggle-btn:hover {
+  background: var(--sidebar-hover);
+  color: var(--sidebar-text);
+}
+
+.sidebar-convos-header {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--sidebar-text);
+  margin-bottom: 12px;
+  padding-left: 12px;
+}
+
+.sidebar-convo-list {
+  display: grid;
+  gap: 4px;
+  max-height: calc(100vh - 320px);
+  overflow-y: auto;
+  padding-right: 2px;
+  margin-bottom: 16px;
+}
+
+.sidebar-convo-list::-webkit-scrollbar {
+  width: 6px;
+}
+.sidebar-convo-list::-webkit-scrollbar-thumb {
+  background: var(--scrollbar);
+  border-radius: 999px;
+}
+
+.sidebar-convo-item,
+.sidebar-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 8px;
+  height: 36px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 150ms ease;
+  position: relative;
+  min-width: 0;
+  color: var(--sidebar-text);
+  text-decoration: none;
+  box-sizing: border-box;
+  font-size: 14px;
+  font-weight: 400;
+}
+
+.sidebar-convo-item:hover,
+.sidebar-menu-item:hover {
+  background: var(--sidebar-hover);
+  color: var(--sidebar-text);
+}
+
+.sidebar-convo-item.active,
+.sidebar-menu-item.active {
+  background: var(--sidebar-active);
+  color: var(--sidebar-text);
+  font-weight: 500;
+}
+
+.convo-icon,
+.menu-icon {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  color: var(--sidebar-muted);
+  transition: color 150ms ease;
+}
+
+.sidebar-convo-item.active .convo-icon,
+.sidebar-menu-item.active .menu-icon {
+  color: var(--sidebar-text);
+}
+
+.convo-title {
+  font-size: 13px;
+  color: inherit;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex: 1;
+  padding-right: 20px;
+}
+
+.convo-delete-btn {
+  position: absolute;
+  right: 6px;
+  background: transparent;
+  border: none;
+  color: var(--sidebar-muted);
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  opacity: 0;
+  transition: opacity 0.2s, color 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sidebar-convo-item:hover .convo-delete-btn {
+  opacity: 1;
+}
+
+.convo-delete-btn:hover {
+  color: var(--danger);
+  background: rgba(159, 56, 56, 0.08);
+}
+
+.page {
+  display: grid;
+  gap: 16px;
+  padding: 24px;
+  box-sizing: border-box;
+}
+
+.page-title {
+  margin: 0;
+  font-size: 24px;
+  line-height: 1.2;
+}
+
+.panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 16px;
+}
+
+.muted {
+  color: var(--text-muted);
+}
+
+.sidebar-backdrop {
+  display: none;
+}
+
+@media (max-width: 900px) {
+  .app-shell,
+  .app-shell.sidebar-collapsed {
+    grid-template-columns: 1fr;
+  }
+
+  /* Dưới 900px, sidebar luôn nổi đè lên nội dung (không đẩy grid) thay vì
+     ẩn hẳn — dải icon 56px khi thu gọn, nút toggle bên trong sidebar là nơi
+     duy nhất để mở/đóng, nên phải luôn hiển thị được kể cả lúc thu gọn. */
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 280px;
+    max-width: 85vw;
+    z-index: 55;
+    box-shadow: 4px 0 24px rgba(0, 0, 0, 0.15);
+  }
+
+  .app-shell.sidebar-collapsed .sidebar {
+    width: 56px;
+  }
+
+  .app-main {
+    margin-left: 56px;
+  }
+
+  .sidebar-backdrop {
+    display: block;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.4);
+    z-index: 50;
+  }
+}
